@@ -37,9 +37,10 @@ dt_changed = to_tensor.type(torch.float64)
 print(dt_changed)
 
 """intialize the random distrubtion """
-normal_dis = torch.normal(mean=torch.arange(1.,2.),std=torch.arange(0,1))      
 
+normal_dis = torch.normal(mean=torch.arange(1.,2.),std=torch.arange(0,1))      
 print(normal_dis.shape)
+
 """"Matrix multiplication of tensors"""
 # additional two 1D matrix
 tensor_x = torch.rand(3,2)
