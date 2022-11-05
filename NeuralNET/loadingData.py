@@ -32,13 +32,21 @@ image, label = next(iter(train_set))
 print(image[0].shape, label.shape)
 
 
-""""plotting some samples from dataset"""
+""""plotting some samples from dataset and training """
 
-image_ = make_grid(image[:12], nrow=12)
-label_ = label[:12].numpy()
-plt.xlabel(label_)
-plt.imshow(np.transpose(image_.numpy(),(1,2,0)), cmap="gray")
-plt.show()
+def plot(train_plot , epochs, test_plot, typePlot=False):
+    fig, (ax,ax1) = plt.subplots(1,2)
+    fig.suptitle('Vertically stacked subplots')
+    ax.plot(train_plot,epochs ,label="training")
+    ax.legend()
+    ax1.plot(test_plot,epochs,label="testing")
+    ax1.legend()
+    if typePlot == True:
+        image_ = make_grid(image[:12], nrow=12)
+        label_ = label[:12].numpy()
+        plt.xlabel(label_)
+        plt.imshow(np.transpose(image_.numpy(),(1,2,0)), cmap="gray")
+        plt.show()
 
 
 """"intiallzie the model multi preceptonce"""
@@ -114,7 +122,10 @@ def Train(Epochs, train_data, test_data):
         loss = criterion(y_val, y_test)
         test_loss.append(loss)
         test_corr.append(test_corrected)
+    return train_loss , train_corr , test_corr , test_loss 
 
 
 if __name__ == '__main__':
-    trainer = Train(10, train_set, test_set)
+    train_loss ,train_corr ,test_corr , test_loss = Train(10, train_set, test_set)
+
+    plot(train_loss, 10, test_1oss)
