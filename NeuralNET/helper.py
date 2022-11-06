@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch.multiprocessing as mp
 import torch
-import time
+from time import time
 
 
 def plot(train_plot, epochs, test_plot, typePlot=False):
@@ -21,18 +21,21 @@ def plot(train_plot, epochs, test_plot, typePlot=False):
 
 
 def TimeCounter_Process(function):
-    start_time = time.time()
-    function
-    end_time = time.time()
-    return f" Time spent for multiprocessing Tasks training : {end_time - start_time}"
+    def warp_func(*args, **kwargs):
+        start_time = time()
+        result = function(*args, **kwargs)
+        end_time = time() 
+        print(f'Function {function.__name__!r} executed in {(end_time-start_time ):.4f}s')
+        return result
+    return warp_func 
+
 
 
 @TimeCounter_Process
 def Proceesing_Parallel_Training(*tasks, Parallel_Training_GPU=False):
     Processors = []
-    Cpu_Counts = multiprocessing.cpu_count()
+    Cpu_Counts = mp.cpu_count()
     device  = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model.share_memory().to(device)
     if Parallel_Training_GPU == True:
         for task in tasks:
             Pool_task_ = mp.Process(target=task)
@@ -44,4 +47,4 @@ def Proceesing_Parallel_Training(*tasks, Parallel_Training_GPU=False):
         Pool_task_1 = mp.Process(target=tasks)
         Pool_task_1.start()
         Pool_task_1.join()
- 
+  
