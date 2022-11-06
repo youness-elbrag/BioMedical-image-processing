@@ -40,7 +40,7 @@ we will use multiprocessing package to creat proccessing training loop
 """
 
 
-def Train(Model,train_data, test_data, Epochs,reshape=False):
+def Train(Model,train_data, test_data, Epochs,reshape=False,Optimizer=False):
     train_loss = []
     test_corr = []
     train_corr = []
@@ -103,5 +103,5 @@ if __name__ == '__main__':
    Runer_Optimizer_= Optimizer(model_2 , lr=0.01)
    """"plotting some samples from dataset and training"""
 
-   Proceesing_Parallel_Training(Train(model_1, train_set, test_set,1),Train(model_2,train_set, test_set,1,reshape=True),Parallel_Training_GPU=True)
+   Proceesing_Parallel_Training(Train(model_1, train_set, test_set,1),Train(model_2,train_set, test_set,1,reshape=True,Optimizer=True),Parallel_Training_GPU=True)
   
