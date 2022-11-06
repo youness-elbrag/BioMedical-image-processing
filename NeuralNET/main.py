@@ -40,7 +40,7 @@ we will use multiprocessing package to creat proccessing training loop
 """
 
 
-def Train(Model, train_data, test_data, Epochs):
+def Train(Model,train_data, test_data, Epochs,reshape=False):
     train_loss = []
     test_corr = []
     train_corr = []
@@ -51,13 +51,24 @@ def Train(Model, train_data, test_data, Epochs):
         test_corrected = 0
         for batch, (X_train, y_train) in enumerate(train_data):
             batch += 1
-            X = X_train.reshape(X_train.shape[0], -1)
-            y_Pred = Model(X)
-            loss = Runer_Optimizer.criterion(y_Pred, y_train)
-            predicted_lable = torch.max(y_Pred.data, dim=1)[1]
-            batch_corrected = (predicted_lable == y_train).sum()
-            train_corrected += batch_corrected
-            Runer_Optimizer
+            if reshape == True:
+                X = X_train
+                y_Pred = Model(X)
+            else:     
+                X = X_train.reshape(X_train.shape[0], -1)
+                y_Pred = Model(X)
+            if Optimizer == True:    
+                loss = Runer_Optimizer_.criterion(y_Pred, y_train)
+                predicted_lable = torch.max(y_Pred.data, dim=1)[1]
+                batch_corrected = (predicted_lable == y_train).sum()
+                train_corrected += batch_corrected
+                Runer_Optimizer_
+            else:    
+                loss = Runer_Optimizer.criterion(y_Pred, y_train)
+                predicted_lable = torch.max(y_Pred.data, dim=1)[1]
+                batch_corrected = (predicted_lable == y_train).sum()
+                train_corrected += batch_corrected
+                Runer_Optimizer
 
             if batch % 200 == 0:
                 acc = train_corrected.item()*100/100*batch
@@ -68,8 +79,10 @@ def Train(Model, train_data, test_data, Epochs):
         train_corr.append(train_corrected)
         with torch.no_grad():
             for b, (X_test, y_test) in enumerate(test_data):
-
-                X_val = X_test.reshape(X_test.shape[0], -1)
+                if reshape == True:
+                    X_val = X_test
+                else: 
+                    X_val = X_test.reshape(X_test.shape[0], -1)     
                 y_val = Model(X_val)
                 y_lable = torch.max(y_val.data, dim=1)[1]
                 test_corrected += (y_lable == y_test).sum()
@@ -82,11 +95,13 @@ def Train(Model, train_data, test_data, Epochs):
 if __name__ == '__main__':
 
    """intialize model architecture based on NeuralClass.py"""
-   model = LinearNet()
+   model_1 = LinearNet()
+   model_2 = Convolution(1,8,10)
    """intialize instance of Loss funcrion and Optimizer"""
-   
-   Runer_Optimizer = Optimizer(model , lr=0.01)
+
+   Runer_Optimizer = Optimizer(model_1 , lr=0.01)
+   Runer_Optimizer_= Optimizer(model_2 , lr=0.01)
    """"plotting some samples from dataset and training"""
 
-   runer = Proceesing_Parallel_Training(Train(model, train_set, test_set,10))
-   runer
+   Proceesing_Parallel_Training(Train(model_1, train_set, test_set,1),Train(model_2,train_set, test_set,1,reshape=True),Parallel_Training_GPU=True)
+  
